@@ -1,5 +1,5 @@
 from flask import Flask
-import stock-market-data as smd
+from myflaskenv import scraping_data as smd
 app = Flask(__name__)
 
 @app.route('/')
