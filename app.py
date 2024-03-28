@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify  # Add 'request' to your imports
-import json
+from flask import Flask, request, jsonify  
 import scraping_data as smd
 from datetime import datetime, timezone
 app = Flask(__name__)
@@ -23,32 +22,26 @@ def get_stock_data():
         else:
             price = smd.get_only_stock_price(stock_symbol)
             return jsonify({'symbol': stock_symbol, 'price': price})
-          # Convert DataFrame to a list of dictionaries
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @app.route('/getSingleStockDetailsInDepth', methods=['GET'])
 def get_details_stock_data():
-    #print("Im in")
     date_format="%B %d %Y"
     stock_symbol = request.args.get('symbol', default='', type=str)
-    #print(type(stock_symbol))
     start_date = request.args.get('start_date', type=str)
     end_date = request.args.get('end_date', type=str)
-   # print(f"start_date={start_date} end_date={end_date}")
+   
     try:
         if start_date!=None and end_date!=None:
             start_date=datetime.strptime(start_date, date_format)
             end_date=datetime.strptime(end_date, date_format)
-        #print(f"after conversion ={start_date} {end_date}")
             start_timestamp= int(start_date.timestamp())
             end_timestamp=int(end_date.timestamp())
-            #print(f"Start Timestamp (GMT): {start_timestamp}")
-            #print(f"End Timestamp (GMT): {end_timestamp}")
             query_url=f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_symbol}?symbol={stock_symbol}&period1={start_timestamp}&period2={end_timestamp}&interval=1d&includePrePost=true&events=div%2Csplit"
             stock_range_data_df=smd.get_stock_data_range(query_url)
             data_for_ranged_dates_json = stock_range_data_df.to_json(orient='records', date_format='iso', default_handler=str)
-            data_for_ranged_dates = json.loads(data_for_ranged_dates_json)  # Convert JSON string back to list of dictionaries
+            data_for_ranged_dates = json.loads(data_for_ranged_dates_json)  
             return jsonify({'data': data_for_ranged_dates})
         
         else:
