@@ -1,27 +1,62 @@
-from flask import Flask
-from myflaskenv import scraping_data as smd
+from flask import Flask, request, jsonify  # Add 'request' to your imports
+import json
+import scraping_data as smd
+from datetime import datetime, timezone
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
-@app.route('/<name>')
-def print_name(name):
-    return 'Hi,{}'.format(name)
-
-@app.route('/ez-stock', methods=['GET'])
+@app.route('/getSingleStockDetails', methods=['GET'])
 def get_stock_data():
     stock_symbol = request.args.get('symbol', default='', type=str)
+    whole_day = request.args.get('whole_day', default='false', type=str).lower() == 'true'  # Check if whole_day is 'true'
+    all_price=request.args.get('all_price',default='false',type=str).lower == 'true'
     if not stock_symbol:
         return jsonify({'error': 'Stock symbol is required'}), 400
     
     try:
-        df = scrape_stock_data(stock_symbol)
-        result = df.to_dict(orient='records')  # Convert DataFrame to a list of dictionaries
-        return jsonify(result), 200
+        if whole_day:
+            query_url=f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_symbol}?symbol={stock_symbol}&interval=1d"
+            whole_day_data = smd.get_stock_data_whole_day(query_url)
+            data_json_whole_day = whole_day_data.to_json(orient='records', date_format='iso', default_handler=str)
+            data_whole_day = json.loads(data_json_whole_day)  # Convert JSON string back to list of dictionaries
+            return jsonify({'symbol': stock_symbol, 'data': data_whole_day})
+    
+        else:
+            price = smd.get_only_stock_price(stock_symbol)
+            return jsonify({'symbol': stock_symbol, 'price': price})
+          # Convert DataFrame to a list of dictionaries
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/getSingleStockDetailsInDepth', methods=['GET'])
+def get_details_stock_data():
+    #print("Im in")
+    date_format="%B %d %Y"
+    stock_symbol = request.args.get('symbol', default='', type=str)
+    #print(type(stock_symbol))
+    start_date = request.args.get('start_date', type=str)
+    end_date = request.args.get('end_date', type=str)
+   # print(f"start_date={start_date} end_date={end_date}")
+    if start_date!=None and end_date!=None:
+        start_date=datetime.strptime(start_date, date_format)
+        end_date=datetime.strptime(end_date, date_format)
+    #print(f"after conversion ={start_date} {end_date}")
+        start_timestamp= int(start_date.timestamp())
+        end_timestamp=int(end_date.timestamp())
+        #print(f"Start Timestamp (GMT): {start_timestamp}")
+        #print(f"End Timestamp (GMT): {end_timestamp}")
+        query_url=f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_symbol}?symbol={stock_symbol}&period1={start_timestamp}&period2={end_timestamp}&interval=1d&includePrePost=true&events=div%2Csplit"
+        stock_range_data_df=smd.get_stock_data_range(query_url)
+        data_for_ranged_dates_json = stock_range_data_df.to_json(orient='records', date_format='iso', default_handler=str)
+        data_for_ranged_dates = json.loads(data_for_ranged_dates_json)  # Convert JSON string back to list of dictionaries
+        return jsonify({'data': data_for_ranged_dates})
+    
+    else:
+        query_url=f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_symbol}?symbol={stock_symbol}&period1=0&period2=9999999999&interval=1d&includePrePost=true&events=div%2Csplit"
+        stock_price_complete_df=smd.get_stock_price_complete(query_url12)
+        data_stock_price_complete_json=stock_price_complete_df.to_json(orient='records',date_format='iso',default_handler=str)
+        data_stock_price_complete=json.loads(data_stock_price_complete_json)
+        return jsonify({'data': data_stock_price_complete})
+
+@app.route('/getMultipleStockDetailsInDepth', methods=['GET'])
+def getMultipleStockDetailsInDepth():
+    pass
