@@ -36,27 +36,28 @@ def get_details_stock_data():
     start_date = request.args.get('start_date', type=str)
     end_date = request.args.get('end_date', type=str)
    # print(f"start_date={start_date} end_date={end_date}")
-    if start_date!=None and end_date!=None:
-        start_date=datetime.strptime(start_date, date_format)
-        end_date=datetime.strptime(end_date, date_format)
-    #print(f"after conversion ={start_date} {end_date}")
-        start_timestamp= int(start_date.timestamp())
-        end_timestamp=int(end_date.timestamp())
-        #print(f"Start Timestamp (GMT): {start_timestamp}")
-        #print(f"End Timestamp (GMT): {end_timestamp}")
-        query_url=f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_symbol}?symbol={stock_symbol}&period1={start_timestamp}&period2={end_timestamp}&interval=1d&includePrePost=true&events=div%2Csplit"
-        stock_range_data_df=smd.get_stock_data_range(query_url)
-        data_for_ranged_dates_json = stock_range_data_df.to_json(orient='records', date_format='iso', default_handler=str)
-        data_for_ranged_dates = json.loads(data_for_ranged_dates_json)  # Convert JSON string back to list of dictionaries
-        return jsonify({'data': data_for_ranged_dates})
+    try:
+        if start_date!=None and end_date!=None:
+            start_date=datetime.strptime(start_date, date_format)
+            end_date=datetime.strptime(end_date, date_format)
+        #print(f"after conversion ={start_date} {end_date}")
+            start_timestamp= int(start_date.timestamp())
+            end_timestamp=int(end_date.timestamp())
+            #print(f"Start Timestamp (GMT): {start_timestamp}")
+            #print(f"End Timestamp (GMT): {end_timestamp}")
+            query_url=f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_symbol}?symbol={stock_symbol}&period1={start_timestamp}&period2={end_timestamp}&interval=1d&includePrePost=true&events=div%2Csplit"
+            stock_range_data_df=smd.get_stock_data_range(query_url)
+            data_for_ranged_dates_json = stock_range_data_df.to_json(orient='records', date_format='iso', default_handler=str)
+            data_for_ranged_dates = json.loads(data_for_ranged_dates_json)  # Convert JSON string back to list of dictionaries
+            return jsonify({'data': data_for_ranged_dates})
+        
+        else:
+            query_url=f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_symbol}?symbol={stock_symbol}&period1=0&period2=9999999999&interval=1d&includePrePost=true&events=div%2Csplit"
+            stock_price_complete_df=smd.get_stock_price_complete(query_url)
+            data_stock_price_complete_json=stock_price_complete_df.to_json(orient='records',date_format='iso',default_handler=str)
+            data_stock_price_complete=json.loads(data_stock_price_complete_json)
+            return jsonify({'data': data_stock_price_complete})
     
-    else:
-        query_url=f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_symbol}?symbol={stock_symbol}&period1=0&period2=9999999999&interval=1d&includePrePost=true&events=div%2Csplit"
-        stock_price_complete_df=smd.get_stock_price_complete(query_url12)
-        data_stock_price_complete_json=stock_price_complete_df.to_json(orient='records',date_format='iso',default_handler=str)
-        data_stock_price_complete=json.loads(data_stock_price_complete_json)
-        return jsonify({'data': data_stock_price_complete})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-@app.route('/getMultipleStockDetailsInDepth', methods=['GET'])
-def getMultipleStockDetailsInDepth():
-    pass
