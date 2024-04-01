@@ -1,7 +1,7 @@
 import urllib.request, json 
 import pandas as pd
 from datetime import datetime, timezone
-
+import json
 
 def get_only_stock_price(stock_name):
     query_url=f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_name}?symbol={stock_name}"
@@ -10,7 +10,6 @@ def get_only_stock_price(stock_name):
             parsed = json.loads(url.read().decode())
             stock_info=str(parsed['chart']['result'][0]['meta']['regularMarketPrice'])+" "+str(parsed['chart']['result'][0]['meta']['currency'])
             return stock_info
-        #print("Stock price for {} is:{} {}".format(stock_name,parsed['chart']['result'][0]['meta']['regularMarketPrice'],parsed['chart']['result'][0]['meta']['currency']))
     except:
         return "There is error in getting stock price"
 

@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify  
 import scraping_data as smd
+import json
 from datetime import datetime, timezone
 app = Flask(__name__)
 
