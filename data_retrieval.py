@@ -167,7 +167,7 @@ def getOnlyETF(user_search):
         }
     try:
         db = client['stock-data-yahoo']
-        stock_info_col = db['etf_info']
+        etf_info_col = db['etf_info']
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
         etf_matches = list(etf_info_col.find(search_query_stock, {"_id": 0}))
