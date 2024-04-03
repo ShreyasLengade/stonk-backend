@@ -3,8 +3,13 @@ from pymongo.server_api import ServerApi
 from functools import wraps
 import Logger as lg
 from flask import jsonify
+from dotenv import load_dotenv
 import os
+#load env is for local development
+load_dotenv() 
+
 uri = os.getenv('MONGODB_URI')
+
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
 # Attempt to connect to MongoDB when the app starts
