@@ -2,8 +2,11 @@ from flask import Flask, request, jsonify
 import scraping_data as smd
 import json
 from datetime import datetime, timezone
+import data_retrieval as dr
 app = Flask(__name__)
 
+
+        
 @app.route('/getSingleStockDetails', methods=['GET'])
 def get_stock_data():
     stock_symbol = request.args.get('symbol', default='', type=str)
@@ -55,3 +58,31 @@ def get_details_stock_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/getInfo',methods=['GET'])
+def get_Info():
+    user_search=request.args.get('userSearch',default='',type=str)
+    search_type=request.args.get('searchType',default='All',type=str)
+    if not user_search:
+        return jsonify({'error': 'Search string is required'}), 400
+    else:
+        if search_type == "All":
+            namesList=dr.getAllNames(user_search)
+            return namesList
+        elif search_type == "Stock":
+            namesList=dr.getOnlyStocks(user_search)
+            return namesList
+        elif search_type == "MF":
+            namesList=dr.getOnlyMf(user_search)
+            return namesList
+        elif search_type == "Currency":
+            namesList=dr.getOnlyCurrency(user_search)
+            return namesList
+        elif search_type == "Index":
+            namesList=dr.getOnlyIndex(user_search)
+            return namesList
+        elif search_type == "ETF":
+            namesList=dr.getOnlyETF(user_search)
+            return namesList
+        else:
+            namesList=dr.getOnlyFuture(user_search)
+            return namesList
