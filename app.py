@@ -13,7 +13,7 @@ def get_stock_data():
     whole_day = request.args.get('whole_day', default='false', type=str).lower() == 'true'  # Check if whole_day is 'true'
     all_price=request.args.get('all_price',default='false',type=str).lower == 'true'
     if not stock_symbol:
-        return jsonify({'error': 'Stock symbol is required'}), 400
+        return jsonify({"error": "Stock symbol is required","code":"400"}) 
     
     try:
         if whole_day:
@@ -21,13 +21,13 @@ def get_stock_data():
             whole_day_data = smd.get_stock_data_whole_day(query_url)
             data_json_whole_day = whole_day_data.to_json(orient='records', date_format='iso', default_handler=str)
             data_whole_day = json.loads(data_json_whole_day)  # Convert JSON string back to list of dictionaries
-            return jsonify({'symbol': stock_symbol, 'data': data_whole_day})
+            return jsonify({"symbol": stock_symbol, "data": data_whole_day})
     
         else:
             price = smd.get_only_stock_price(stock_symbol)
             return jsonify({'symbol': stock_symbol, 'price': price})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e),"code" : "500"})
 
 @app.route('/getSingleStockDetailsInDepth', methods=['GET'])
 def get_details_stock_data():
@@ -56,14 +56,14 @@ def get_details_stock_data():
             return jsonify({'data': data_stock_price_complete})
     
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e),"code" : "500"})
 
 @app.route('/getInfo',methods=['GET'])
 def get_Info():
     user_search=request.args.get('userSearch',default='',type=str)
     search_type=request.args.get('searchType',default='All',type=str)
     if not user_search:
-        return jsonify({'error': 'Search string is required'}), 400
+        return jsonify({"error": "Search string is required","code":"400"}) 
     else:
         if search_type == "All":
             namesList=dr.getAllNames(user_search)

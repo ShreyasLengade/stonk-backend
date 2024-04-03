@@ -27,7 +27,7 @@ def check_mongodb_connection(f):
                 raise Exception("No records found in the database.")
         except Exception as e:
             lg.logger.error("Failed to connect to MongoDB: %s", str(e))
-            return jsonify({"error": "Failed to connect to MongoDB", "details": str(e)}), 503
+            return jsonify({"error": "Failed to connect to MongoDB", "details": str(e),"code":"503"})
         return f(*args, **kwargs)
     return decorated_function
 
@@ -120,11 +120,14 @@ def getAllNames(user_search):
 
         # Create dictionary with non-empty lists only
         all_assets_dictionary = {asset: matches[asset] for asset in matches if matches[asset]}
-        return jsonify(all_assets_dictionary)
+        if all_assets_dictionary:
+            return jsonify(all_assets_dictionary)
+        else:
+            return jsonify({"message":"No records can be found","code":"404"})
 
     except Exception as e:
         lg.logger.error("Failed to fetch records: %s", str(e))
-        return jsonify({"error": "Failed to fetch records", "details": str(e)}), 500
+        return jsonify({"error": "Failed to fetch records", "details": str(e),"code":"500"})
 
 def getOnlyStocks(user_search):
     # Create a case-insensitive regex search pattern
@@ -145,13 +148,13 @@ def getOnlyStocks(user_search):
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
         stock_matches = list(stock_info_col.find(search_query_stock, {"_id": 0}))
-        if stock_matches is not empty:
+        if stock_matches != []:
             return jsonify({'Stocks':stock_matches})
         else:
-            return jsonify({"Couldn't find Stocks"}),404
+            return jsonify({"Code":"404","message":"Couldn't find Stocks"}),404
     except Exception as e:
         lg.logger.error("Failed to fetch records: %s", str(e))
-        return jsonify({"error": "Failed to fetch records", "details": str(e)}), 500
+        return jsonify({"error": "Failed to fetch records", "details": str(e),"code":"500"})
 
 
 def getOnlyETF(user_search):
@@ -171,11 +174,13 @@ def getOnlyETF(user_search):
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
         etf_matches = list(etf_info_col.find(search_query_etf, {"_id": 0}))
-        if etf_matches is not empty:
-            return jsonify({"Couldn't find ETF"}),404
+        if etf_matches != []:
+            return jsonify({'ETF':etf_matches})
+        else:
+            return jsonify({"Code":"404","message":"Couldn't find ETF"}),404
     except Exception as e:
         lg.logger.error("Failed to fetch records: %s", str(e))
-        return jsonify({"error": "Failed to fetch records", "details": str(e)}), 500
+        return jsonify({"error": "Failed to fetch records", "details": str(e),"code":"500"})
 
 
 def getOnlyMf(user_search):
@@ -193,11 +198,13 @@ def getOnlyMf(user_search):
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
         mutual_funds_matches = list(mutual_funds_info_col.find(search_query_mf, {"_id": 0}))
-        if mutual_funds_matches is not empty:
-            return jsonify({"Couldn't find MF"}),404
+        if mutual_funds_matches != []:
+            return jsonify({'MF':mutual_funds_matches})
+        else:
+            return jsonify({"Code":"404","message":"Couldn't find MF"}),404
     except Exception as e:
         lg.logger.error("Failed to fetch records: %s", str(e))
-        return jsonify({"error": "Failed to fetch records", "details": str(e)}), 500
+        return jsonify({"error": "Failed to fetch records", "details": str(e),"code":"500"})
 
 
 def getOnlyFuture(user_search):
@@ -215,11 +222,13 @@ def getOnlyFuture(user_search):
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
         future_matches = list(future_info_col.find(search_query_future, {"_id": 0}))
-        if future_matches is not empty:
-            return jsonify({"Couldn't find future"}),404
+        if future_matches != []:
+            return jsonify({'Future':future_matches})
+        else:
+            return jsonify({"Code":"404","message":"Couldn't find Future"}),404
     except Exception as e:
         lg.logger.error("Failed to fetch records: %s", str(e))
-        return jsonify({"error": "Failed to fetch records", "details": str(e)}), 500
+        return jsonify({"error": "Failed to fetch records", "details": str(e),"code":"500"})
 
 
 def getOnlyCurrency(user_search):
@@ -237,11 +246,13 @@ def getOnlyCurrency(user_search):
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
         currency_matches = list(currency_info_col.find(search_query_currency, {"_id": 0}))
-        if currency_matches is not empty:
-            return jsonify({"Couldn't find currency"}),404
+        if currency_matches != []:
+            return jsonify({'Currency':currency_matches})
+        else:
+            return jsonify({"Code":"404","message":"Couldn't find currency"})
     except Exception as e:
         lg.logger.error("Failed to fetch records: %s", str(e))
-        return jsonify({"error": "Failed to fetch records", "details": str(e)}), 500
+        return jsonify({"error": "Failed to fetch records", "details": str(e),"code":"500"})
 
 
 def getOnlyIndex(user_search):
@@ -259,11 +270,13 @@ def getOnlyIndex(user_search):
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
         index_matches = list(index_info_col.find(search_query_index, {"_id": 0}))
-        if index_matches is not empty:
-            return jsonify({"Couldn't find index"}),404
+        if index_matches != []:
+            return jsonify({'Index':index_matches})
+        else:
+            return jsonify({"Code":"404","message":"Couldn't find Index"})
     except Exception as e:
-        lg.logger.error("Failed to fetch records: %s", str(e))
-        return jsonify({"error": "Failed to fetch records", "details": str(e)}), 500
+            lg.logger.error("Failed to fetch records: %s", str(e))
+            return jsonify({"error": "Failed to fetch records", "details": str(e),"code":"500"})
 
         
         
