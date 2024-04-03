@@ -21,7 +21,7 @@ def check_mongodb_connection(f):
             lg.logger.info("Connected to MongoDB!")
             # Attempt to fetch a record from a specific collection
             db = client['stock-data-yahoo']
-            collection = db['stock_info']  # Replace 'your_collection_name' with your actual collection name
+            collection = db['stock_info'] 
             record = collection.find_one()
             if not record:
                 raise Exception("No records found in the database.")
@@ -94,21 +94,14 @@ def getAllNames(user_search):
         index_info_col = db['index_info']
         currency_info_col = db['currency_info']
         future_info_col = db['future_info']
-        #print("etf_info_col",etf_info_col)
+
         # Fetch matching documents from both collections
-        etf_matches = list(etf_info_col.find(search_query_etf, {"_id": 0}))
-        stock_matches = list(stock_info_col.find(search_query_stock, {"_id": 0}))
-        mutual_funds_matches = list(mutual_funds_info_col.find(search_query_stock, {"_id": 0}))
-        index_matches = list(index_info_col.find(search_query_stock, {"_id": 0}))
-        future_matches = list(future_info_col.find(search_query_stock, {"_id": 0}))
-        currency_matches = list(currency_info_col.find(search_query_stock, {"_id": 0}))
-        """ print("currency matches",currency_matches)
-        print("future matches",future_matches)
-        print("Index matches",index_matches)
-        print("mutual_funds matches",mutual_funds_matches)
-        print("ETF MAtches",etf_matches)
-        print("Stock matches",stock_matches)"""
-        
+        etf_matches = list(etf_info_col.find(search_query_etf, {"_id": 0}).limit(100))
+        stock_matches = list(stock_info_col.find(search_query_stock, {"_id": 0}).limit(100))
+        mutual_funds_matches = list(mutual_funds_info_col.find(search_query_stock, {"_id": 0}).limit(100))
+        index_matches = list(index_info_col.find(search_query_stock, {"_id": 0}).limit(100))
+        future_matches = list(future_info_col.find(search_query_stock, {"_id": 0}).limit(100))
+        currency_matches = list(currency_info_col.find(search_query_stock, {"_id": 0}).limit(100))
         matches = {
         "Stocks": stock_matches,
         "ETF": etf_matches,
@@ -145,9 +138,7 @@ def getOnlyStocks(user_search):
     try:
         db = client['stock-data-yahoo']
         stock_info_col = db['stock_info']
-        #print("etf_info_col",etf_info_col)
-        # Fetch matching documents from both collections
-        stock_matches = list(stock_info_col.find(search_query_stock, {"_id": 0}))
+        stock_matches = list(stock_info_col.find(search_query_stock, {"_id": 0}).limit(100))
         if stock_matches != []:
             return jsonify({'Stocks':stock_matches})
         else:
@@ -171,9 +162,7 @@ def getOnlyETF(user_search):
     try:
         db = client['stock-data-yahoo']
         etf_info_col = db['etf_info']
-        #print("etf_info_col",etf_info_col)
-        # Fetch matching documents from both collections
-        etf_matches = list(etf_info_col.find(search_query_etf, {"_id": 0}))
+        etf_matches = list(etf_info_col.find(search_query_etf, {"_id": 0}).limit(100))
         if etf_matches != []:
             return jsonify({'ETF':etf_matches})
         else:
@@ -195,9 +184,7 @@ def getOnlyMf(user_search):
     try:
         db = client['stock-data-yahoo']
         mutual_funds_info_col = db['stock_info']
-        #print("etf_info_col",etf_info_col)
-        # Fetch matching documents from both collections
-        mutual_funds_matches = list(mutual_funds_info_col.find(search_query_mf, {"_id": 0}))
+        mutual_funds_matches = list(mutual_funds_info_col.find(search_query_mf, {"_id": 0}).limit(100))
         if mutual_funds_matches != []:
             return jsonify({'MF':mutual_funds_matches})
         else:
@@ -219,9 +206,7 @@ def getOnlyFuture(user_search):
     try:
         db = client['stock-data-yahoo']
         future_info_col = db['future_info']
-        #print("etf_info_col",etf_info_col)
-        # Fetch matching documents from both collections
-        future_matches = list(future_info_col.find(search_query_future, {"_id": 0}))
+        future_matches = list(future_info_col.find(search_query_future, {"_id": 0}).limit(100))
         if future_matches != []:
             return jsonify({'Future':future_matches})
         else:
@@ -243,9 +228,7 @@ def getOnlyCurrency(user_search):
     try:
         db = client['stock-data-yahoo']
         currency_info_col = db['currency_info']
-        #print("etf_info_col",etf_info_col)
-        # Fetch matching documents from both collections
-        currency_matches = list(currency_info_col.find(search_query_currency, {"_id": 0}))
+        currency_matches = list(currency_info_col.find(search_query_currency, {"_id": 0}).limit(100))
         if currency_matches != []:
             return jsonify({'Currency':currency_matches})
         else:
@@ -267,9 +250,7 @@ def getOnlyIndex(user_search):
     try:
         db = client['stock-data-yahoo']
         index_info_col = db['index_info']
-        #print("etf_info_col",etf_info_col)
-        # Fetch matching documents from both collections
-        index_matches = list(index_info_col.find(search_query_index, {"_id": 0}))
+        index_matches = list(index_info_col.find(search_query_index, {"_id": 0}).limit(100))
         if index_matches != []:
             return jsonify({'Index':index_matches})
         else:
