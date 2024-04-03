@@ -11,7 +11,6 @@ app = Flask(__name__)
 def get_stock_data():
     stock_symbol = request.args.get('symbol', default='', type=str)
     whole_day = request.args.get('whole_day', default='false', type=str).lower() == 'true'  # Check if whole_day is 'true'
-    all_price=request.args.get('all_price',default='false',type=str).lower == 'true'
     if not stock_symbol:
         return jsonify({"error": "Stock symbol is required","code":"400"}) 
     
