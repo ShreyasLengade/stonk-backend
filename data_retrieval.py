@@ -170,7 +170,7 @@ def getOnlyETF(user_search):
         etf_info_col = db['etf_info']
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
-        etf_matches = list(etf_info_col.find(search_query_stock, {"_id": 0}))
+        etf_matches = list(etf_info_col.find(search_query_etf, {"_id": 0}))
         if etf_matches is not empty:
             return jsonify({"Couldn't find ETF"}),404
     except Exception as e:
@@ -192,7 +192,7 @@ def getOnlyMf(user_search):
         mutual_funds_info_col = db['stock_info']
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
-        mutual_funds_matches = list(mutual_funds_info_col.find(search_query_stock, {"_id": 0}))
+        mutual_funds_matches = list(mutual_funds_info_col.find(search_query_mf, {"_id": 0}))
         if mutual_funds_matches is not empty:
             return jsonify({"Couldn't find MF"}),404
     except Exception as e:
@@ -214,7 +214,7 @@ def getOnlyFuture(user_search):
         future_info_col = db['future_info']
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
-        future_matches = list(future_info_col.find(search_query_stock, {"_id": 0}))
+        future_matches = list(future_info_col.find(search_query_future, {"_id": 0}))
         if future_matches is not empty:
             return jsonify({"Couldn't find future"}),404
     except Exception as e:
@@ -236,7 +236,7 @@ def getOnlyCurrency(user_search):
         currency_info_col = db['currency_info']
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
-        currency_matches = list(currency_info_col.find(search_query_stock, {"_id": 0}))
+        currency_matches = list(currency_info_col.find(search_query_currency, {"_id": 0}))
         if currency_matches is not empty:
             return jsonify({"Couldn't find currency"}),404
     except Exception as e:
@@ -258,7 +258,7 @@ def getOnlyIndex(user_search):
         index_info_col = db['index_info']
         #print("etf_info_col",etf_info_col)
         # Fetch matching documents from both collections
-        index_matches = list(index_info_col.find(search_query_stock, {"_id": 0}))
+        index_matches = list(index_info_col.find(search_query_index, {"_id": 0}))
         if index_matches is not empty:
             return jsonify({"Couldn't find index"}),404
     except Exception as e:
