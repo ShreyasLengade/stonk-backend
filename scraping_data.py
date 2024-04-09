@@ -11,7 +11,7 @@ def get_only_stock_price(stock_name):
             stock_info=str(parsed['chart']['result'][0]['meta']['regularMarketPrice'])+" "+str(parsed['chart']['result'][0]['meta']['currency'])
             return stock_info
     except:
-        return "There is error in getting stock price"
+        return "Currently there is no price available for this financial asset"
 
 
 def get_stock_price_complete(query_url):
