@@ -1,5 +1,5 @@
 # stonk-backend
-This is a api project where I have created a list of api's to whom if called, people can get data of stocks,etfs,mutual funds, index and currency. Now individuals can get data upto previous day and can use it to perform portfolio analysis, performance analysis etc.
+This is an API project where I have created a list of APIs that provide data on stocks, ETFs, mutual funds, indices, and currencies. Users can access data up to the previous day and utilize it to perform portfolio analysis, performance analysis, and other related tasks.
 <p>You can use the api by following link:- <a href="https://stock-market-data-manage.onrender.com/apidocs/">Swagger Api doc</a></p>
 <p></p><b>Note:</b> This application is hosted for free on Render.com. As such, the initial load time may take up to a minute or two due to the way free services manage server resources—instances are not always active, which can lead to longer start times. Once loaded, you should experience good responsiveness.</p>
 
